@@ -1,0 +1,39 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: something-strange
+spec:
+  type: LoadBalancer
+  selector:
+    app: something-strange
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 433 
+      targetPort: 433
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: something-strange
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: something-strange
+  template:
+    metadata:
+      labels:
+        app: something-strange
+    spec:
+      containers:
+      - name: nginx
+        image: digitalocean/doks-example
+        ports:
+        - containerPort: 80
+          protocol: TCP
